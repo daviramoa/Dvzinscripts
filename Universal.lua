@@ -1,18 +1,24 @@
--- DVZIN ADMIN GUI COMPACTA - FINAL
+-- DVZIN ADMIN GUI BROOKHAVEN + UNIVERSAL ~400 linhas
 local Player = game.Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local ContextActionService = game:GetService("ContextActionService")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- ScreenGui
+-- GUI base
 local gui = Instance.new("ScreenGui")
-gui.Name = "DVZIN_AdminGUI_Compact"
+gui.Name = "DVZIN_AdminGUI_BH"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = PlayerGui
 
--- Função para drag PC e celular
+local activePopups = {}
+
+-- Função Drag PC/celular
 local function makeDraggable(frame)
 	local dragging, dragStart, startPos = false, nil, nil
 	frame.InputBegan:Connect(function(input)
@@ -36,152 +42,7 @@ local function makeDraggable(frame)
 	end)
 end
 
--- Função criar frame principal
-local function createMainFrame()
-	local frame = Instance.new("Frame")
-	frame.Size = UDim2.new(0,400,0,320)
-	frame.Position = UDim2.new(0.5,0,0.5,0)
-	frame.AnchorPoint = Vector2.new(0.5,0.5)
-	frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
-	frame.BorderSizePixel = 0
-	frame.Parent = gui
-	frame.ClipsDescendants = true
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0,12)
-	corner.Parent = frame
-
-	local title = Instance.new("TextLabel")
-	title.Text = "DVZIN ADMIN"
-	title.Font = Enum.Font.GothamBold
-	title.TextSize = 22
-	title.TextColor3 = Color3.fromRGB(255,255,255)
-	title.BackgroundTransparency = 1
-	title.Position = UDim2.new(0,15,0,10)
-	title.Size = UDim2.new(1,-30,0,28)
-	title.TextXAlignment = Enum.TextXAlignment.Left
-	title.Parent = frame
-
-	-- Botão minimizar
-	local minimizeBtn = Instance.new("TextButton")
-	minimizeBtn.Text = "_"
-	minimizeBtn.Font = Enum.Font.GothamBold
-	minimizeBtn.TextSize = 18
-	minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	minimizeBtn.BackgroundColor3 = Color3.fromRGB(100,100,100)
-	minimizeBtn.Size = UDim2.new(0,28,0,28)
-	minimizeBtn.Position = UDim2.new(1,-70,0,10)
-	minimizeBtn.Parent = frame
-	local minCorner = Instance.new("UICorner")
-	minCorner.CornerRadius = UDim.new(0,6)
-	minCorner.Parent = minimizeBtn
-
-	-- Botão fechar
-	local closeBtn = Instance.new("TextButton")
-	closeBtn.Text = "X"
-	closeBtn.Font = Enum.Font.GothamBold
-	closeBtn.TextSize = 18
-	closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	closeBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
-	closeBtn.Size = UDim2.new(0,28,0,28)
-	closeBtn.Position = UDim2.new(1,-36,0,10)
-	closeBtn.Parent = frame
-	local closeCorner = Instance.new("UICorner")
-	closeCorner.CornerRadius = UDim.new(0,6)
-	closeCorner.Parent = closeBtn
-	closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
-
-	makeDraggable(frame)
-
-	return frame, minimizeBtn
-end
-
--- Criar sidebar e container
-local function createSidebar(parent)
-	local sidebar = Instance.new("ScrollingFrame")
-	sidebar.Size = UDim2.new(0,140,1,-40)
-	sidebar.Position = UDim2.new(0,0,0,40)
-	sidebar.BackgroundColor3 = Color3.fromRGB(35,35,35)
-	sidebar.BorderSizePixel = 0
-	sidebar.ScrollBarThickness = 8
-	sidebar.Parent = parent
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0,8)
-	corner.Parent = sidebar
-
-	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0,8)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = sidebar
-
-	local padding = Instance.new("UIPadding")
-	padding.PaddingTop = UDim.new(0,10)
-	padding.PaddingLeft = UDim.new(0,10)
-	padding.PaddingRight = UDim.new(0,10)
-	padding.Parent = sidebar
-
-	return sidebar
-end
-
-local function createContainer(parent)
-	local container = Instance.new("Frame")
-	container.Size = UDim2.new(1,-150,1,-40)
-	container.Position = UDim2.new(0,150,0,40)
-	container.BackgroundTransparency = 1
-	container.Parent = parent
-	return container
-end
-
-local function createCategory(name, sidebar, container)
-	local btn = Instance.new("TextButton")
-	btn.Text = name
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 18
-	btn.TextColor3 = Color3.fromRGB(255,255,255)
-	btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
-	btn.Size = UDim2.new(1,-10,0,38)
-	btn.Parent = sidebar
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0,6)
-	corner.Parent = btn
-
-	local scroll = Instance.new("ScrollingFrame")
-	scroll.Size = UDim2.new(1,0,1,0)
-	scroll.Position = UDim2.new(0,0,0,0)
-	scroll.BackgroundTransparency = 1
-	scroll.ScrollBarThickness = 8
-	scroll.Visible = false
-	scroll.Parent = container
-
-	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0,8)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = scroll
-
-	local padding = Instance.new("UIPadding")
-	padding.PaddingTop = UDim.new(0,10)
-	padding.PaddingLeft = UDim.new(0,10)
-	padding.PaddingRight = UDim.new(0,10)
-	padding.Parent = scroll
-
-	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 10)
-	end)
-
-	btn.MouseButton1Click:Connect(function()
-		for _, child in pairs(container:GetChildren()) do
-			if child:IsA("ScrollingFrame") then
-				child.Visible = false
-			end
-		end
-		scroll.Visible = true
-	end)
-
-	return scroll
-end
-
+-- Função criar popup
 local function createPopup(titleText,width,height)
 	local popup = Instance.new("Frame")
 	popup.Size = UDim2.new(0,width,0,height)
@@ -189,7 +50,6 @@ local function createPopup(titleText,width,height)
 	popup.AnchorPoint = Vector2.new(0.5,0.5)
 	popup.BackgroundColor3 = Color3.fromRGB(50,50,50)
 	popup.Parent = gui
-
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0,8)
 	corner.Parent = popup
@@ -206,13 +66,20 @@ local function createPopup(titleText,width,height)
 	local closeCorner = Instance.new("UICorner")
 	closeCorner.CornerRadius = UDim.new(0,5)
 	closeCorner.Parent = closeBtn
-	closeBtn.MouseButton1Click:Connect(function() popup:Destroy() end)
+	closeBtn.MouseButton1Click:Connect(function()
+		popup:Destroy()
+		for i,v in pairs(activePopups) do
+			if v == popup then table.remove(activePopups,i) break end
+		end
+	end)
 
 	makeDraggable(popup)
+	table.insert(activePopups,popup)
 	return popup
 end
 
-local function addScript(scrollFrame,scriptName,callback)
+-- Função adicionar script
+local function addScript(scrollFrame, scriptName, callback)
 	local frame = Instance.new("Frame")
 	frame.Size = UDim2.new(1,0,0,80)
 	frame.BackgroundColor3 = Color3.fromRGB(60,60,60)
@@ -247,162 +114,219 @@ local function addScript(scrollFrame,scriptName,callback)
 	btn.MouseButton1Click:Connect(callback)
 end
 
--- CRIANDO GUI
 -- Criar frame principal
-local mainFrame, minimizeBtn = createMainFrame()
-local sidebar = createSidebar(mainFrame)
-local container = createContainer(mainFrame)
-local universal = createCategory("Universal", sidebar, container)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0,450,0,450)
+mainFrame.Position = UDim2.new(0.5,0,0.5,0)
+mainFrame.AnchorPoint = Vector2.new(0.5,0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+mainFrame.Parent = gui
+	mainFrame.ClipsDescendants = true
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0,12)
+corner.Parent = mainFrame
+makeDraggable(mainFrame)
 
--- Função para minimizar/restaurar GUI
-local minimized = false
-minimizeBtn.MouseButton1Click:Connect(function()
-	if minimized then
-		-- Restaurar
-		mainFrame.Size = UDim2.new(0,400,0,320)
-		container.Visible = true
-		sidebar.Visible = true
-		minimized = false
-	else
-		-- Minimizar
-		mainFrame.Size = UDim2.new(0,200,0,50)
-		container.Visible = false
-		sidebar.Visible = false
-		minimized = true
+local title = Instance.new("TextLabel")
+title.Text = "DVZIN ADMIN - BROOKHAVEN"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.BackgroundTransparency = 1
+title.Position = UDim2.new(0,15,0,10)
+title.Size = UDim2.new(1,-30,0,28)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = mainFrame
+
+-- Botão fechar GUI
+local closeBtn = Instance.new("TextButton")
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 18
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+closeBtn.Size = UDim2.new(0,28,0,28)
+closeBtn.Position = UDim2.new(1,-36,0,10)
+closeBtn.Parent = mainFrame
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0,6)
+closeCorner.Parent = closeBtn
+closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
+
+-- Botão fechar todos popups
+local closeAllBtn = Instance.new("TextButton")
+closeAllBtn.Text = "Fechar Popups"
+closeAllBtn.Font = Enum.Font.GothamBold
+closeAllBtn.TextSize = 14
+closeAllBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeAllBtn.BackgroundColor3 = Color3.fromRGB(255,100,100)
+closeAllBtn.Size = UDim2.new(0,120,0,28)
+closeAllBtn.Position = UDim2.new(1,-160,0,10)
+closeAllBtn.Parent = mainFrame
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0,6)
+btnCorner.Parent = closeAllBtn
+closeAllBtn.MouseButton1Click:Connect(function()
+	for _, popup in pairs(activePopups) do
+		if popup and popup.Parent then popup:Destroy() end
 	end
+	activePopups = {}
 end)
 
--- SCRIPT VELOCIDADE
-addScript(universal, "Velocidade", function()
-	local popup = createPopup("Velocidade", 280, 140)
+-- Sidebar
+local sidebar = Instance.new("ScrollingFrame")
+sidebar.Size = UDim2.new(0,160,1,-40)
+sidebar.Position = UDim2.new(0,0,0,40)
+sidebar.BackgroundColor3 = Color3.fromRGB(40,40,40)
+sidebar.BorderSizePixel = 0
+sidebar.ScrollBarThickness = 8
+sidebar.Parent = mainFrame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0,8)
+corner.Parent = sidebar
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0,8)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = sidebar
+local padding = Instance.new("UIPadding")
+padding.PaddingTop = UDim.new(0,10)
+padding.PaddingLeft = UDim.new(0,10)
+padding.PaddingRight = UDim.new(0,10)
+padding.Parent = sidebar
+
+-- Container
+local container = Instance.new("Frame")
+container.Size = UDim2.new(1,-170,1,-40)
+container.Position = UDim2.new(0,170,0,40)
+container.BackgroundTransparency = 1
+container.Parent = mainFrame
+
+-- Categorias
+local function createCategory(name)
+	local btn = Instance.new("TextButton")
+	btn.Text = name
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 18
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+	btn.Size = UDim2.new(1,-10,0,38)
+	btn.Parent = sidebar
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0,6)
+	corner.Parent = btn
+	local scroll = Instance.new("ScrollingFrame")
+	scroll.Size = UDim2.new(1,0,1,0)
+	scroll.Position = UDim2.new(0,0,0,0)
+	scroll.BackgroundTransparency = 1
+	scroll.ScrollBarThickness = 8
+	scroll.Visible = false
+	scroll.Parent = container
+	local layout = Instance.new("UIListLayout")
+	layout.Padding = UDim.new(0,8)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Parent = scroll
+	local padding = Instance.new("UIPadding")
+	padding.PaddingTop = UDim.new(0,10)
+	padding.PaddingLeft = UDim.new(0,10)
+	padding.PaddingRight = UDim.new(0,10)
+	padding.Parent = scroll
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 10)
+	end)
+	btn.MouseButton1Click:Connect(function()
+		for _, child in pairs(container:GetChildren()) do
+			if child:IsA("ScrollingFrame") then child.Visible = false end
+		end
+		scroll.Visible = true
+	end)
+	return scroll
+end
+
+local universal = createCategory("Universal")
+local brookhaven = createCategory("Brookhaven")
+
+-- ======== FUNÇÕES UNIVERSAIS =========
+-- Velocidade
+addScript(universal,"Velocidade",function()
+	local popup = createPopup("Velocidade",280,140)
 	local char = Player.Character or Player.CharacterAdded:Wait()
 	local humanoid = char:WaitForChild("Humanoid")
-
-	local textBox = Instance.new("TextBox")
-	textBox.PlaceholderText = "Digite a velocidade..."
-	textBox.Font = Enum.Font.Gotham
-	textBox.TextColor3 = Color3.fromRGB(255,255,255)
-	textBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
-	textBox.Size = UDim2.new(0.8,0,0,35)
-	textBox.Position = UDim2.new(0.1,0,0.2,0)
-	textBox.TextSize = 16
-	textBox.Parent = popup
-	local tbCorner = Instance.new("UICorner")
-	tbCorner.CornerRadius = UDim.new(0,6)
-	tbCorner.Parent = textBox
-
-	local applyBtn = Instance.new("TextButton")
-	applyBtn.Text = "Aplicar Velocidade"
-	applyBtn.Font = Enum.Font.GothamBold
-	applyBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	applyBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
-	applyBtn.Size = UDim2.new(0.8,0,0,35)
-	applyBtn.Position = UDim2.new(0.1,0,0.6,0)
-	applyBtn.TextSize = 16
-	applyBtn.Parent = popup
-	local btnCorner = Instance.new("UICorner")
-	btnCorner.CornerRadius = UDim.new(0,6)
-	btnCorner.Parent = applyBtn
-
-	applyBtn.MouseButton1Click:Connect(function()
-		local speed = tonumber(textBox.Text)
-		if speed and humanoid then
-			humanoid.WalkSpeed = speed
-			applyBtn.Text = "Velocidade: "..speed
-			applyBtn.BackgroundColor3 = Color3.fromRGB(0,200,100)
-			task.wait(0.8)
-			applyBtn.Text = "Aplicar Velocidade"
-			applyBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
-		else
-			applyBtn.Text = "Número inválido!"
-			applyBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
-			task.wait(0.8)
-			applyBtn.Text = "Aplicar Velocidade"
-			applyBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
-		end
+	local tb = Instance.new("TextBox")
+	tb.PlaceholderText = "Digite a velocidade..."
+	tb.Size = UDim2.new(0.8,0,0,35)
+	tb.Position = UDim2.new(0.1,0,0.2,0)
+	tb.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	tb.TextColor3 = Color3.fromRGB(255,255,255)
+	tb.Parent = popup
+	local btn = Instance.new("TextButton")
+	btn.Text = "Aplicar"
+	btn.Size = UDim2.new(0.8,0,0,35)
+	btn.Position = UDim2.new(0.1,0,0.6,0)
+	btn.BackgroundColor3 = Color3.fromRGB(0,170,255)
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.Parent = popup
+	btn.MouseButton1Click:Connect(function()
+		local speed = tonumber(tb.Text)
+		if speed then humanoid.WalkSpeed = speed end
 	end)
 end)
 
--- SCRIPT VOO AVANÇADO CORRIGIDO
-addScript(universal, "Voo Avançado", function()
-	local popup = createPopup("Voo Avançado", 320, 220)
+-- Voo simples
+addScript(universal,"Voo",function()
+	local popup = createPopup("Voo",280,160)
 	local char = Player.Character or Player.CharacterAdded:Wait()
 	local root = char:WaitForChild("HumanoidRootPart")
-	local flying, speed = false, 50
-	local bodyVelocity, bodyGyro
-
-	-- Caixa de velocidade
+	local humanoid = char:WaitForChild("Humanoid")
+	local flying,speed = false,50
+	local bodyVelocity,bodyGyro
 	local speedBox = Instance.new("TextBox")
-	speedBox.PlaceholderText = "Velocidade (padrão 50)"
-	speedBox.Font = Enum.Font.Gotham
-	speedBox.TextColor3 = Color3.fromRGB(255,255,255)
-	speedBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	speedBox.PlaceholderText = "Velocidade padrão 50"
 	speedBox.Size = UDim2.new(0.8,0,0,35)
 	speedBox.Position = UDim2.new(0.1,0,0.15,0)
-	speedBox.TextSize = 16
+	speedBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	speedBox.TextColor3 = Color3.fromRGB(255,255,255)
 	speedBox.Parent = popup
-	local speedCorner = Instance.new("UICorner")
-	speedCorner.CornerRadius = UDim.new(0,6)
-	speedCorner.Parent = speedBox
-
-	-- Botão Ativar/Desativar voo
 	local flyBtn = Instance.new("TextButton")
 	flyBtn.Text = "Ativar Voo"
-	flyBtn.Font = Enum.Font.GothamBold
-	flyBtn.TextSize = 16
-	flyBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	flyBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
 	flyBtn.Size = UDim2.new(0.8,0,0,35)
-	flyBtn.Position = UDim2.new(0.1,0,0.45,0)
+	flyBtn.Position = UDim2.new(0.1,0,0.55,0)
+	flyBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
+	flyBtn.TextColor3 = Color3.fromRGB(255,255,255)
 	flyBtn.Parent = popup
-	local flyCorner = Instance.new("UICorner")
-	flyCorner.CornerRadius = UDim.new(0,6)
-	flyCorner.Parent = flyBtn
 
-	-- Funções de voo
 	local function startFlying()
 		if flying then return end
 		flying = true
 		speed = tonumber(speedBox.Text) or 50
 		flyBtn.Text = "Desativar Voo"
-
 		bodyVelocity = Instance.new("BodyVelocity")
 		bodyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
 		bodyVelocity.Velocity = Vector3.new(0,0,0)
 		bodyVelocity.Parent = root
-
 		bodyGyro = Instance.new("BodyGyro")
 		bodyGyro.MaxTorque = Vector3.new(1e5,1e5,1e5)
 		bodyGyro.CFrame = root.CFrame
 		bodyGyro.Parent = root
 	end
-
 	local function stopFlying()
 		flying = false
 		flyBtn.Text = "Ativar Voo"
 		if bodyVelocity then bodyVelocity:Destroy() end
 		if bodyGyro then bodyGyro:Destroy() end
 	end
-
 	flyBtn.MouseButton1Click:Connect(function()
 		if flying then stopFlying() else startFlying() end
 	end)
-
-	-- Movimento voo PC e celular corrigido
 	RunService.RenderStepped:Connect(function()
 		if flying and bodyVelocity and bodyGyro then
 			local move = Vector3.new(0,0,0)
 			local camCFrame = workspace.CurrentCamera.CFrame
-
-			-- Teclas PC
 			if UserInputService:IsKeyDown(Enum.KeyCode.W) then move += camCFrame.LookVector end
 			if UserInputService:IsKeyDown(Enum.KeyCode.S) then move -= camCFrame.LookVector end
 			if UserInputService:IsKeyDown(Enum.KeyCode.A) then move -= camCFrame.RightVector end
 			if UserInputService:IsKeyDown(Enum.KeyCode.D) then move += camCFrame.RightVector end
 			if UserInputService:IsKeyDown(Enum.KeyCode.Space) then move += Vector3.new(0,1,0) end
 			if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then move -= Vector3.new(0,1,0) end
-
-			-- Toques celular
 			local touches = UserInputService:GetTouches()
 			for _, t in ipairs(touches) do
 				if t.Position.Y < workspace.CurrentCamera.ViewportSize.Y/2 then
@@ -411,13 +335,73 @@ addScript(universal, "Voo Avançado", function()
 					move -= Vector3.new(0,1,0)
 				end
 			end
-
-			if move.Magnitude > 0 then
-				bodyVelocity.Velocity = move.Unit * speed
+			if move.Magnitude>0 then
+				bodyVelocity.Velocity = move.Unit*speed
 			else
 				bodyVelocity.Velocity = Vector3.new(0,0,0)
 			end
-			bodyGyro.CFrame = CFrame.new(root.Position, root.Position + camCFrame.LookVector)
+			bodyGyro.CFrame = CFrame.new(root.Position,root.Position+camCFrame.LookVector)
 		end
 	end)
 end)
+
+-- ======== FUNÇÕES BROOKHAVEN =========
+-- Unban casas
+addScript(brookhaven,"Unban Casas",function()
+	for _,house in pairs(Workspace:GetChildren()) do
+		if house:FindFirstChild("BanBox") then
+			house.BanBox:Destroy()
+		end
+	end
+end)
+
+-- Troll spawn sons FE
+addScript(brookhaven,"Troll Sons FE",function()
+	for i=1,10 do
+		local sound = Instance.new("Sound")
+		sound.SoundId = "rbxassetid://142376088" -- Exemplo FE
+		sound.Volume = 10
+		sound.Parent = Workspace
+		sound:Play()
+	end
+end)
+
+-- Anti sentar / anti carro
+addScript(brookhaven,"Proteção Sentar/Carro",function()
+	local char = Player.Character or Player.CharacterAdded:Wait()
+	local hum = char:WaitForChild("Humanoid")
+	hum.Seated:Connect(function(active)
+		if active then hum.Sit = false end
+	end)
+end)
+
+-- Spawn itens FE
+addScript(brookhaven,"Spawn Itens FE",function()
+	local popup = createPopup("Spawn Itens",300,200)
+	local tb = Instance.new("TextBox")
+	tb.PlaceholderText = "Digite o nome do item FE"
+	tb.Size = UDim2.new(0.8,0,0,35)
+	tb.Position = UDim2.new(0.1,0,0.2,0)
+	tb.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	tb.TextColor3 = Color3.fromRGB(255,255,255)
+	tb.Parent = popup
+	local btn = Instance.new("TextButton")
+	btn.Text = "Spawn"
+	btn.Size = UDim2.new(0.8,0,0,35)
+	btn.Position = UDim2.new(0.1,0,0.6,0)
+	btn.BackgroundColor3 = Color3.fromRGB(0,170,255)
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.Parent = popup
+	btn.MouseButton1Click:Connect(function()
+		local itemName = tb.Text
+		local item = ReplicatedStorage:FindFirstChild(itemName)
+		if item then
+			local clone = item:Clone()
+			clone.Parent = Workspace
+			clone.Position = Player.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+		end
+	end)
+end)
+
+-- ⚠️ OBS: Este script é expandido, você pode continuar adicionando mais funções similares
+-- para trollagens
