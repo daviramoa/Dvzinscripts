@@ -497,8 +497,7 @@ async def slash_meuspedidos(interaction: discord.Interaction):
     pedidos = carregar_json(DATA_PEDIDOS, [])
     meus = [p for p in pedidos if p.get("cliente_id") == interaction.user.id]
     if not meus:
-        await 
-interaction.response.send_message("📦 Você ainda não tem pedidos registrados.", ephemeral=True)
+        await interaction.response.send_message("📦 Você ainda não tem pedidos registrados.", ephemeral=True)
         return
     desc_lines = []
     for i,p in enumerate(meus[-10:][::-1], 1):  # mostra últimos 10
@@ -510,7 +509,8 @@ interaction.response.send_message("📦 Você ainda não tem pedidos registrados
 @bot.tree.command(name="verprodutos", description="Listar produtos cadastrados (ADM)")
 async def slash_verprodutos(interaction: discord.Interaction):
     if not is_admin(interaction):
-        await interaction.response.send_message("⚠️Apenas administradores.", ephemeral=True)
+        await 
+interaction.response.send_message("⚠️ Apenas administradores.", ephemeral=True)
         return
     produtos = listar_produtos()
     if not produtos:
