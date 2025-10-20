@@ -509,8 +509,7 @@ async def slash_meuspedidos(interaction: discord.Interaction):
 @bot.tree.command(name="verprodutos", description="Listar produtos cadastrados (ADM)")
 async def slash_verprodutos(interaction: discord.Interaction):
     if not is_admin(interaction):
-        await 
-interaction.response.send_message("⚠️ Apenas administradores.", ephemeral=True)
+        await interaction.response.send_message("⚠️ Apenas administradores.", ephemeral=True)
         return
     produtos = listar_produtos()
     if not produtos:
