@@ -19,7 +19,7 @@ DATA_PRODUTOS = "produto_returnbusiness.json"
 DATA_CUPONS = "cupons_returnbusiness.json"
 DATA_PEDIDOS = "pedidos_returnbusiness.json"  # opcional: histórico de pedidos
 PIX_CHAVE_PADRAO = ""  # Se quiser chave fixa da loja, coloque aqui (opcional)
-STORE_NAME = "RETURN BUSINESS"
+STORE_NAME = "ERIN BOTS"
 # =================================================
 
 # Verifica token
