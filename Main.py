@@ -533,4 +533,4 @@ async def on_message(message: discord.Message):
 
 # ===== RUN =====
 if __name__ == "__main__":
-    bot.run("TOKEN")
+    bot.run("MTQwMzc5Mzg2NDc0OTM1MTAwMg.GaVGUa.URInjJq_uK0lIcfty0wGmF4MuFpGt_PfM4grOQ")
