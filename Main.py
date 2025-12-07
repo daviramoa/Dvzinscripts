@@ -21,11 +21,6 @@ PIX_CHAVE_PADRAO = ""  # Se quiser chave fixa da loja, coloque aqui (opcional)
 STORE_NAME = "ERIN BOTS"
 # =================================================
 
-# Verifica token
-if not TOKEN:
-    raise RuntimeError("Variável de ambiente DISCORD_TOKEN não encontrada. Defina antes de executar o bot.")
-
-# ===== INTENTS =====
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
