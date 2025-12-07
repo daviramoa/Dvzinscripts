@@ -13,7 +13,6 @@ from typing import Optional, List
 
 
 # ================= CONFIGURAÇÃO =================
-TOKEN = os.getenv("DISCORD_TOKEN")  # defina a variável de ambiente DISCORD_TOKEN
 CANAL_LOGS_ID = 123456789012345678  # substitua pelo ID do canal onde logs de compra vão
 DATA_PRODUTOS = "produto_returnbusiness.json"
 DATA_CUPONS = "cupons_returnbusiness.json"
@@ -534,4 +533,4 @@ async def on_message(message: discord.Message):
 
 # ===== RUN =====
 if __name__ == "__main__":
-    bot.run(TOKEN)
+    bot.run("TOKEN")
